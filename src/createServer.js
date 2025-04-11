@@ -10,22 +10,23 @@ function createServer() {
   const server = http.createServer((req, res) => {
     const ret = {
       parts: [],
-      query: {}
+      query: {},
     };
 
     const reqArr = req.url.split('?');
     const parts = reqArr[0].split('/');
-    const params = new URLSearchParams(reqArr[1]);
-
+    const params = reqArr[1] ? new URLSearchParams(reqArr[1]) : new URLSearchParams();
 
     // get usefull parts
-    const realParts = parts.filter((v) => { return v !== '' });
+    const realParts = parts.filter((v) => {
+      return v !== '';
+    });
+
     ret.parts = realParts;
 
     for (const key of params.keys()) {
       ret.query[key] = params.get(key);
     }
-
 
     // headers should be set before sending data
     res.setHeader('Content-Type', 'application/json');
@@ -33,7 +34,7 @@ function createServer() {
 
     res.write(JSON.stringify(ret));
     res.end();
-  })
+  });
 
   return server;
 }
